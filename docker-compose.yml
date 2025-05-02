@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      context: ./app
+    ports:
+      - 8080:8080
+  postgres:
+    image: postgres:latest
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db
+    ports:
+      - 5432:5432
