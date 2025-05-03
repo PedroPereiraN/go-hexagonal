@@ -6,7 +6,6 @@ services:
       - 8080:8080
   postgres:
     image: postgres:latest
-    container_name: db
     restart: always
     environment:
       POSTGRES_PASSWORD: postgres

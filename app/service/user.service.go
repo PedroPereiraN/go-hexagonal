@@ -25,12 +25,8 @@ type userService struct {
 }
 
 func (service *userService) Create(dto domain.UserDomain) (string, error) {
-  uDomain := domain.UserDomain{
-    Name: dto.Name,
-    Email: dto.Email,
-    Password: dto.Password,
-    Id: uuid.New(),
-  }
+  uDomain := domain.UserDomain{}
+  uDomain.CreateUser(dto)
 
   newUserId, err := service.repository.Create(uDomain)
 
