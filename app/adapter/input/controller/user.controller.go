@@ -4,9 +4,11 @@ import (
 	"net/http"
 	"github.com/PedroPereiraN/go-hexagonal/adapter/input/model"
 	"github.com/PedroPereiraN/go-hexagonal/domain"
+  "github.com/PedroPereiraN/go-hexagonal/helpers"
 	"github.com/PedroPereiraN/go-hexagonal/port/input"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+  "fmt"
 )
 
 func NewUserController(
@@ -22,6 +24,7 @@ type UserController interface {
   List(c *gin.Context)
   Update(c *gin.Context)
   Delete(c *gin.Context)
+  UpdatePassword(c *gin.Context)
 }
 
 type userController struct {
@@ -117,7 +120,6 @@ func (controller *userController) Update(c *gin.Context) {
 
   uDomain := domain.UserDomain{
     Email: userRequest.Email,
-		Password: userRequest.Password,
 		Name: userRequest.Name,
   }
 
@@ -148,6 +150,67 @@ func (controller *userController) Delete(c *gin.Context) {
   }
 
   result, err := controller.service.Delete(userId)
+
+  if err != nil {
+    c.JSON(http.StatusInternalServerError, err)
+    return
+  }
+
+  c.JSON(http.StatusOK, result)
+}
+
+func (controller *userController) UpdatePassword(c *gin.Context) {
+  paramsId := c.Query("id")
+
+  if paramsId == "" {
+    c.JSON(http.StatusBadRequest, "Unspecified user")
+    return
+  }
+
+  userId, err := uuid.Parse(paramsId)
+
+  if err != nil {
+    c.JSON(http.StatusBadRequest, "Invalid id")
+    return
+  }
+
+  var passwordRequest model.UserUpdatePasswordModel
+
+  if err := c.ShouldBindJSON(&passwordRequest); err != nil {
+
+    c.JSON(http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+  uDomain := domain.UserDomain{
+    Password: passwordRequest.Password,
+  }
+
+  userInfo, err := controller.service.List(userId)
+
+  if err != nil {
+    fmt.Println("estamos pegando o info do usuário")
+    fmt.Println(err)
+    c.JSON(http.StatusInternalServerError, err)
+    return
+  }
+
+  isTheSame, err := helpers.VerifyOldPassword(userInfo, uDomain.Password)
+
+  if err != nil {
+    fmt.Println("estamos usando a função de verificação")
+    fmt.Println(err)
+    c.JSON(http.StatusInternalServerError, err)
+    return
+  }
+
+  if isTheSame {
+    c.JSON(http.StatusBadRequest, "New password cannot be the same as the previous one")
+    return
+  }
+
+  result, err := controller.service.UpdatePassword(userId, uDomain.Password)
 
   if err != nil {
     c.JSON(http.StatusInternalServerError, err)

@@ -8,6 +8,9 @@ type UserRequestModel struct {
 
 type UserUpdateModel struct {
   Email string `json:"email,omitempty" binding:"omitempty,email"`
-  Password string `json:"password,omitempty" binding:"omitempty,min=6,containsany=!@#$%*"`
   Name string `json:"name,omitempty" binding:"omitempty,min=3,max=100"`
+}
+
+type UserUpdatePasswordModel struct {
+  Password string `json:"password" binding:"required,min=6,containsany=!@#$%*"`
 }

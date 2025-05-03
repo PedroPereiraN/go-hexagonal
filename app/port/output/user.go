@@ -11,4 +11,5 @@ type UserRepository interface {
   ListAll() ([]domain.UserDomain, error)
   Update(uuid.UUID, domain.UserDomain) (uuid.UUID, error)
   Delete(uuid.UUID) (uuid.UUID, error)
+  UpdatePassword(uuid.UUID, string) (uuid.UUID, error)
 }

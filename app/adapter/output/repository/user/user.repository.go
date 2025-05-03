@@ -19,6 +19,7 @@ type UserRepository interface {
   ListAll() ([]domain.UserDomain, error)
   Update(uuid.UUID, domain.UserDomain) (uuid.UUID, error)
   Delete(uuid.UUID) (uuid.UUID, error)
+  UpdatePassword(uuid.UUID, string) (uuid.UUID, error)
 }
 
 type userRepository struct {}
@@ -133,6 +134,28 @@ func (repository *userRepository) Delete(id uuid.UUID) (uuid.UUID, error) {
   }
 
   userId, err := database.DeleteUser(db, id)
+
+  if err != nil {
+    return uuid.New(), err
+  }
+
+  defer db.Close()
+
+  return userId, nil
+}
+
+func (repository *userRepository) UpdatePassword(id uuid.UUID, password string) (uuid.UUID, error) {
+  db, err := sql.Open("postgres", connStr)
+
+  if err != nil {
+    return uuid.New(), err
+  }
+
+  if err = db.Ping(); err != nil {
+    return uuid.New(), err
+  }
+
+  userId, err := database.UpdateUserPassword(db, id, password)
 
   if err != nil {
     return uuid.New(), err

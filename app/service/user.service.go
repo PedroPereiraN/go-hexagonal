@@ -1,9 +1,9 @@
 package service
 
-import(
-  "github.com/PedroPereiraN/go-hexagonal/port/output"
-  "github.com/PedroPereiraN/go-hexagonal/domain"
-  "github.com/google/uuid"
+import (
+	"github.com/PedroPereiraN/go-hexagonal/domain"
+	"github.com/PedroPereiraN/go-hexagonal/port/output"
+	"github.com/google/uuid"
 )
 
 func NewUserService(repository port.UserRepository) UserService {
@@ -18,6 +18,7 @@ type UserService interface {
   ListAll() ([]domain.UserDomain, error)
   Update(uuid.UUID, domain.UserDomain) (string, error)
   Delete(uuid.UUID) (string, error)
+  UpdatePassword(uuid.UUID, string) (string, error)
 }
 
 type userService struct {
@@ -25,8 +26,13 @@ type userService struct {
 }
 
 func (service *userService) Create(dto domain.UserDomain) (string, error) {
-  uDomain := domain.UserDomain{}
-  uDomain.CreateUser(dto)
+  uDomain := domain.UserDomain{
+    Name: dto.Name,
+    Email: dto.Email,
+    Password: dto.Password,
+  }
+  uDomain.EncryptPassword()
+  uDomain.AddId()
 
   newUserId, err := service.repository.Create(uDomain)
 
@@ -63,7 +69,6 @@ func (service *userService) Update(id uuid.UUID, dto domain.UserDomain) (string,
   uDomain := domain.UserDomain{
     Name: dto.Name,
     Email: dto.Email,
-    Password: dto.Password,
   }
 
   newUserId, err := service.repository.Update(id, uDomain)
@@ -85,6 +90,24 @@ func (service *userService) Delete(id uuid.UUID) (string, error) {
   }
 
   successMessage := "User deleted successfully: " + userId.String()
+
+  return successMessage, nil
+}
+
+func (service *userService) UpdatePassword(id uuid.UUID, password string) (string, error) {
+  uDomain := domain.UserDomain{
+    Password: password,
+  }
+
+  uDomain.EncryptPassword()
+
+  newUserId, err := service.repository.UpdatePassword(id, uDomain.Password)
+
+  if err != nil {
+    return "", err
+  }
+
+  successMessage := "User password edited successfully: " + newUserId.String()
 
   return successMessage, nil
 }

@@ -2,7 +2,6 @@ package domain
 
 import (
   "github.com/google/uuid"
-  "crypto/md5"
 	"encoding/hex"
 )
 
@@ -13,16 +12,11 @@ type UserDomain struct {
   Email string
 }
 
-func (user *UserDomain) EncryptPassword(password string) string {
-	hash := md5.New()
-	defer hash.Reset()
-	hash.Write([]byte(password))
-	return hex.EncodeToString(hash.Sum(nil))
+func (user *UserDomain) EncryptPassword() {
+  passwordToBytes := []byte(user.Password)
+	user.Password = hex.EncodeToString(passwordToBytes)
 }
 
-func (user *UserDomain) CreateUser(newUser UserDomain) {
+func (user *UserDomain) AddId() {
   user.Id = uuid.New()
-  user.Password = user.EncryptPassword(newUser.Password)
-  user.Email = newUser.Email
-  user.Name = newUser.Name
 }

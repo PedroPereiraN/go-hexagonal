@@ -19,6 +19,7 @@ func main() {
   r.POST("/user", uController.Create)
   r.GET("/user", uController.List)
   r.PUT("/user", uController.Update)
+  r.PATCH("/user/change-password", uController.UpdatePassword)
   r.DELETE("/user", uController.Delete)
 
   r.Run()

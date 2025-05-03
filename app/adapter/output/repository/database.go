@@ -102,12 +102,6 @@ func UpdateUser(db *sql.DB, id uuid.UUID, dto domain.UserDomain) (uuid.UUID, err
     newUserData.Name = dto.Name
   }
 
-  if dto.Password == "" {
-    newUserData.Password = user.Password
-  } else {
-    newUserData.Password = dto.Password
-  }
-
   if dto.Email == "" {
     newUserData.Email = user.Email
   } else {
@@ -118,11 +112,11 @@ func UpdateUser(db *sql.DB, id uuid.UUID, dto domain.UserDomain) (uuid.UUID, err
     return uuid.New(), err
   }
 
-  query := `UPDATE users SET name = $2, password = $3, email = $4 WHERE id = $1 RETURNING id`
+  query := `UPDATE users SET name = $2, email = $3 WHERE id = $1 RETURNING id`
 
   var pk uuid.UUID
 
-  err = db.QueryRow(query, id, newUserData.Name, newUserData.Password, newUserData.Email).Scan(&pk)
+  err = db.QueryRow(query, id, newUserData.Name, newUserData.Email).Scan(&pk)
 
   if err != nil {
     return uuid.New(), err
@@ -138,6 +132,21 @@ func DeleteUser(db *sql.DB, id uuid.UUID) (uuid.UUID, error) {
   query := `DELETE FROM users WHERE id = $1 RETURNING id`
 
   err := db.QueryRow(query, id).Scan(&pk)
+
+  if err != nil {
+    return uuid.New(), err
+  }
+
+  return pk, nil
+}
+
+func UpdateUserPassword(db *sql.DB, id uuid.UUID, password string) (uuid.UUID, error) {
+
+  query := `UPDATE users SET password = $2 WHERE id = $1 RETURNING id`
+
+  var pk uuid.UUID
+
+  err := db.QueryRow(query, id, password).Scan(&pk)
 
   if err != nil {
     return uuid.New(), err

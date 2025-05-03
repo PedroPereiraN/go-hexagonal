@@ -11,4 +11,5 @@ type UserService interface {
   ListAll() ([]domain.UserDomain, error)
   Update(uuid.UUID, domain.UserDomain) (string, error)
   Delete(uuid.UUID) (string, error)
+  UpdatePassword(uuid.UUID, string) (string, error)
 }
