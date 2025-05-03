@@ -5,8 +5,9 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserService interface {
-  Create(domain.UserDomain) (string, error)
+type UserRepository interface {
+  Create(domain.UserDomain) (uuid.UUID, error)
   List(uuid.UUID) (domain.UserDomain, error)
   ListAll() ([]domain.UserDomain, error)
+  Update(uuid.UUID, domain.UserDomain) (uuid.UUID, error)
 }

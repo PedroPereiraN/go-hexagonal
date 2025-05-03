@@ -89,3 +89,44 @@ func ListAllUser(db *sql.DB) ([]domain.UserDomain, error) {
 
   return users, nil
 }
+
+func UpdateUser(db *sql.DB, id uuid.UUID, dto domain.UserDomain) (uuid.UUID, error) {
+
+  user, err := ListUser(db, id)
+
+  newUserData := domain.UserDomain{}
+
+  if dto.Name == "" {
+    newUserData.Name = user.Name
+  } else {
+    newUserData.Name = dto.Name
+  }
+
+  if dto.Password == "" {
+    newUserData.Password = user.Password
+  } else {
+    newUserData.Password = dto.Password
+  }
+
+  if dto.Email == "" {
+    newUserData.Email = user.Email
+  } else {
+    newUserData.Email = dto.Email
+  }
+
+  if err != nil {
+    return uuid.New(), err
+  }
+
+  query := `UPDATE users SET name = $2, password = $3, email = $4 WHERE id = $1 RETURNING id`
+
+  var pk uuid.UUID
+
+  err = db.QueryRow(query, id, newUserData.Name, newUserData.Password, newUserData.Email).Scan(&pk)
+
+  if err != nil {
+    return uuid.New(), err
+  }
+
+  return pk, nil
+}

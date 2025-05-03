@@ -16,6 +16,7 @@ type UserService interface {
   Create(domain.UserDomain) (string, error)
   List(uuid.UUID) (domain.UserDomain, error)
   ListAll() ([]domain.UserDomain, error)
+  Update(uuid.UUID, domain.UserDomain) (string, error)
 }
 
 type userService struct {
@@ -36,7 +37,7 @@ func (service *userService) Create(dto domain.UserDomain) (string, error) {
     return "", err
   }
 
-  successMessage := "Usuário criado com sucesso: " + newUserId.String()
+  successMessage := "User created successfully: " + newUserId.String()
 
   return successMessage, nil
 }
@@ -59,4 +60,23 @@ func (service *userService) ListAll() ([]domain.UserDomain, error) {
   }
 
   return users, nil
+}
+
+func (service *userService) Update(id uuid.UUID, dto domain.UserDomain) (string, error) {
+  uDomain := domain.UserDomain{
+    Name: dto.Name,
+    Email: dto.Email,
+    Password: dto.Password,
+  }
+
+  newUserId, err := service.repository.Update(id, uDomain)
+
+  if err != nil {
+    print(err)
+    return "", err
+  }
+
+  successMessage := "User edited successfully: " + newUserId.String()
+
+  return successMessage, nil
 }

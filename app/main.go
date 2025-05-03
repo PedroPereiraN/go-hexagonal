@@ -18,6 +18,7 @@ func main() {
 
   r.POST("/user", uController.Create)
   r.GET("/user", uController.List)
+  r.PUT("/user", uController.Update)
 
   r.Run()
 }

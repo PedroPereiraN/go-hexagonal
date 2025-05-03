@@ -20,6 +20,7 @@ func NewUserController(
 type UserController interface {
   Create(c *gin.Context)
   List(c *gin.Context)
+  Update(c *gin.Context)
 }
 
 type userController struct {
@@ -84,6 +85,47 @@ func (controller *userController) List(c *gin.Context) {
     return
   }
 
+
+  c.JSON(http.StatusOK, result)
+}
+
+func (controller *userController) Update(c *gin.Context) {
+
+  paramsId := c.Query("id")
+
+  if paramsId == "" {
+    c.JSON(http.StatusBadRequest, "Unspecified user")
+    return
+  }
+
+  userId, err := uuid.Parse(paramsId)
+
+  if err != nil {
+    c.JSON(http.StatusBadRequest, "Invalid id")
+    return
+  }
+
+  var userRequest model.UserUpdateModel
+
+  if err := c.ShouldBindJSON(&userRequest); err != nil {
+
+    c.JSON(http.StatusBadRequest, err.Error())
+
+		return
+	}
+
+  uDomain := domain.UserDomain{
+    Email: userRequest.Email,
+		Password: userRequest.Password,
+		Name: userRequest.Name,
+  }
+
+  result, err := controller.service.Update(userId, uDomain)
+
+  if err != nil {
+    c.JSON(http.StatusInternalServerError, err)
+    return
+  }
 
   c.JSON(http.StatusOK, result)
 }

@@ -17,6 +17,7 @@ type UserRepository interface {
   Create(domain.UserDomain) (uuid.UUID, error)
   List(uuid.UUID) (domain.UserDomain, error)
   ListAll() ([]domain.UserDomain, error)
+  Update(uuid.UUID, domain.UserDomain) (uuid.UUID, error)
 }
 
 type userRepository struct {}
@@ -94,4 +95,26 @@ func (repository *userRepository) ListAll() ([]domain.UserDomain, error) {
   defer db.Close()
 
   return users, nil
+}
+
+func (repository *userRepository) Update(id uuid.UUID, dto domain.UserDomain) (uuid.UUID, error) {
+  db, err := sql.Open("postgres", connStr)
+
+  if err != nil {
+    return uuid.New(), err
+  }
+
+  if err = db.Ping(); err != nil {
+    return uuid.New(), err
+  }
+
+  userId, err := database.UpdateUser(db, id, dto)
+
+  if err != nil {
+    return uuid.New(), err
+  }
+
+  defer db.Close()
+
+  return userId, nil
 }
