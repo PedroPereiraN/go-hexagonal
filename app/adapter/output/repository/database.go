@@ -130,3 +130,18 @@ func UpdateUser(db *sql.DB, id uuid.UUID, dto domain.UserDomain) (uuid.UUID, err
 
   return pk, nil
 }
+
+func DeleteUser(db *sql.DB, id uuid.UUID) (uuid.UUID, error) {
+
+  var pk uuid.UUID
+
+  query := `DELETE FROM users WHERE id = $1 RETURNING id`
+
+  err := db.QueryRow(query, id).Scan(&pk)
+
+  if err != nil {
+    return uuid.New(), err
+  }
+
+  return pk, nil
+}

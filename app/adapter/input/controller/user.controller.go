@@ -21,6 +21,7 @@ type UserController interface {
   Create(c *gin.Context)
   List(c *gin.Context)
   Update(c *gin.Context)
+  Delete(c *gin.Context)
 }
 
 type userController struct {
@@ -121,6 +122,32 @@ func (controller *userController) Update(c *gin.Context) {
   }
 
   result, err := controller.service.Update(userId, uDomain)
+
+  if err != nil {
+    c.JSON(http.StatusInternalServerError, err)
+    return
+  }
+
+  c.JSON(http.StatusOK, result)
+}
+
+func (controller *userController) Delete(c *gin.Context) {
+
+  paramsId := c.Query("id")
+
+  if paramsId == "" {
+    c.JSON(http.StatusBadRequest, "Unspecified user")
+    return
+  }
+
+  userId, err := uuid.Parse(paramsId)
+
+  if err != nil {
+    c.JSON(http.StatusBadRequest, "Invalid id")
+    return
+  }
+
+  result, err := controller.service.Delete(userId)
 
   if err != nil {
     c.JSON(http.StatusInternalServerError, err)

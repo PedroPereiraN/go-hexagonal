@@ -17,6 +17,7 @@ type UserService interface {
   List(uuid.UUID) (domain.UserDomain, error)
   ListAll() ([]domain.UserDomain, error)
   Update(uuid.UUID, domain.UserDomain) (string, error)
+  Delete(uuid.UUID) (string, error)
 }
 
 type userService struct {
@@ -72,11 +73,22 @@ func (service *userService) Update(id uuid.UUID, dto domain.UserDomain) (string,
   newUserId, err := service.repository.Update(id, uDomain)
 
   if err != nil {
-    print(err)
     return "", err
   }
 
   successMessage := "User edited successfully: " + newUserId.String()
+
+  return successMessage, nil
+}
+
+func (service *userService) Delete(id uuid.UUID) (string, error) {
+  userId, err := service.repository.Delete(id)
+
+  if err != nil {
+    return "", err
+  }
+
+  successMessage := "User deleted successfully: " + userId.String()
 
   return successMessage, nil
 }
