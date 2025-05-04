@@ -13,3 +13,5 @@
 ```sh
 docker compose up -d --build
 ```
+
+to access the documentation just run the code and go to [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
