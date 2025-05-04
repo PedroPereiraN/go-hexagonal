@@ -31,6 +31,16 @@ type userController struct {
   service port.UserService
 }
 
+  // @Summary create user
+  // @Description create a new user
+  // @Tags user
+  // @Accept json
+  // @Produce json
+  // @Param user body model.UserRequestModel true "user"
+  // @Success 200 "User created successfully"
+  // @Failure 400 "invalid values"
+  // @Failure 500 "Internal server error"
+  // @Router /user [post]
 func (controller *userController) Create(c *gin.Context) {
 
   var userRequest model.UserRequestModel
@@ -58,6 +68,17 @@ func (controller *userController) Create(c *gin.Context) {
   c.JSON(http.StatusOK, result)
 }
 
+
+  // @Summary list users
+  // @Description list all users or specify one user using his id
+  // @Tags user
+  // @Accept json
+  // @Produce json
+  // @Param id query string false "user id"
+  // @Success 200 {array} domain.UserDomain
+  // @Failure 400 "User not found"
+  // @Failure 500 "Internal server error"
+  // @Router /user [get]
 func (controller *userController) List(c *gin.Context) {
 
   paramsId := c.Query("id")
@@ -93,6 +114,17 @@ func (controller *userController) List(c *gin.Context) {
   c.JSON(http.StatusOK, result)
 }
 
+  // @Summary edit user
+  // @Description edit an user
+  // @Tags user
+  // @Accept json
+  // @Produce json
+  // @Param user body model.UserUpdateModel true "user"
+  // @Param id query string true "user id"
+  // @Success 200 "User edited successfully"
+  // @Failure 400 "invalid values"
+  // @Failure 500 "Internal server error"
+  // @Router /user [put]
 func (controller *userController) Update(c *gin.Context) {
 
   paramsId := c.Query("id")
@@ -133,6 +165,17 @@ func (controller *userController) Update(c *gin.Context) {
   c.JSON(http.StatusOK, result)
 }
 
+
+  // @Summary delete user
+  // @Description delete an user
+  // @Tags user
+  // @Accept json
+  // @Produce json
+  // @Param id query string true "user id"
+  // @Success 200 "User deleted successfully"
+  // @Failure 400 "invalid id"
+  // @Failure 500 "Internal server error"
+  // @Router /user [delete]
 func (controller *userController) Delete(c *gin.Context) {
 
   paramsId := c.Query("id")
@@ -159,6 +202,17 @@ func (controller *userController) Delete(c *gin.Context) {
   c.JSON(http.StatusOK, result)
 }
 
+  // @Summary update user password
+  // @Description update an user password
+  // @Tags user
+  // @Accept json
+  // @Produce json
+  // @Param id query string true "user id"
+  // @Param password body model.UserUpdatePasswordModel true "new password"
+  // @Success 200 "User password edited successfully"
+  // @Failure 400 "invalid values"
+  // @Failure 500 "Internal server error"
+  // @Router /user/change-password [patch]
 func (controller *userController) UpdatePassword(c *gin.Context) {
   paramsId := c.Query("id")
 
