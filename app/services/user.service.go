@@ -10,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var jwtSecret = []byte("prontuario-veterinario")
+var jwtSecret = []byte("super-secret")
 
 func NewUserService(repository port.UserRepository) UserService {
 	return &userService{

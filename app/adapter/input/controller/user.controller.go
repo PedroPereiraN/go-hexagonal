@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 	"github.com/PedroPereiraN/go-hexagonal/adapter/input/model"
@@ -103,9 +102,6 @@ func (controller *userController) List(c *gin.Context) {
     }
 
     result, err := controller.service.List(userId)
-
-		fmt.Println(err)
-		fmt.Println(result)
 
     if err != nil {
       c.JSON(http.StatusBadRequest, "User not found")
