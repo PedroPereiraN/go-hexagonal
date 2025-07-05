@@ -6,7 +6,8 @@
 
 - [Gingonic](https://gin-gonic.com/)
 - [PostgreSQL](https://www.postgresql.org/)
-- [Docker](https://www.docker.com/)
+- [Docker/Docker compose](https://www.docker.com/)
+- [Swaggo](https://github.com/swaggo/swag)
 
 ### Run the project
 
