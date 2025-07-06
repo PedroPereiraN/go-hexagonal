@@ -104,7 +104,7 @@ func (controller *userController) List(c *gin.Context) {
     result, err := controller.service.List(userId)
 
     if err != nil {
-      c.JSON(http.StatusBadRequest, "User not found")
+      c.JSON(http.StatusNotFound, "User not found")
       return
     }
 
@@ -153,7 +153,7 @@ func (controller *userController) Delete(c *gin.Context) {
   result, err := controller.service.Delete(userId)
 
 	if err != nil && err.Error() == "sql: no rows in result set" {
-    c.JSON(http.StatusBadRequest, "User not found")
+    c.JSON(http.StatusNotFound, "User not found")
     return
   }
 
