@@ -178,6 +178,33 @@ func (service *userService) Update(id uuid.UUID, dto domain.UserDomain) (uuid.UU
 		return uuid.Nil, err
 	}
 
+	//check phone
+	_, err = service.repository.FindUserByPhone(uDomain.Phone)
+
+	// first we check if an error exists
+	// if the error exists and is NOT because the value could not be found we return the error
+	// if the error is because the value doesn't exists we ignore it
+	if err != nil && err.Error() != "sql: no rows in result set" {
+		return uuid.Nil, err
+	}
+
+	// second we check if errors doesnt exists, because if the error doesn't exists an user with this phone already exists
+	// so we cant let this user be created
+	if err == nil {
+		return uuid.Nil, errors.New("Phone is already registered")
+	}
+
+	// check email
+	_, err = service.repository.FindUserByEmail(uDomain.Email)
+
+	if err != nil && err.Error() != "sql: no rows in result set" {
+		return uuid.Nil, err
+	}
+
+	if err == nil {
+		return uuid.Nil, errors.New("Email is already registered")
+	}
+
 	userId, err := service.repository.Update(id, uDomain)
 
 	if err != nil {
