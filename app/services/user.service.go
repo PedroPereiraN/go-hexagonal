@@ -215,6 +215,12 @@ func (service *userService) Update(id uuid.UUID, dto domain.UserDomain) (uuid.UU
 }
 
 func (service *userService) UpdatePassword(id uuid.UUID, password string) (uuid.UUID, error) {
+	_, err := service.repository.List(id)
+
+	if err != nil {
+		return uuid.Nil, err
+	}
+
 	uDomain, err := domain.CreateUser(
 		uuid.Nil,
 		"",
