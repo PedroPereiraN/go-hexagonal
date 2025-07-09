@@ -2,10 +2,8 @@ package test
 
 import (
 	"errors"
-	"fmt"
 	"testing"
 	"time"
-
 	"github.com/PedroPereiraN/go-hexagonal/domain"
 	"github.com/PedroPereiraN/go-hexagonal/services"
 	"github.com/PedroPereiraN/go-hexagonal/tests/mocks"
@@ -54,7 +52,7 @@ func TestUserService_Login(t *testing.T) {
 		uDomain, err := domain.CreateUser(uuid.Nil, "", userEmail, "00000000000", newPassword, time.Time{}, time.Time{}, time.Time{})
 
 		if err != nil {
-			fmt.Println("Error while trying to create a new user for testing")
+			t.Fatalf("an error '%s' was not expected when opening creating a new user struct", err.Error())
 		}
 
 		repository.EXPECT().FindUserByEmail(userEmail).Return(uDomain, nil)
