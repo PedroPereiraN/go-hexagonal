@@ -14,7 +14,7 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
-func TestUserServiceLogin(t *testing.T) {
+func TestUserService_Login(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	repository := mocks.NewMockUserRepository(ctrl)

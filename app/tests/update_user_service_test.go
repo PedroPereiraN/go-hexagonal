@@ -12,7 +12,7 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
-func TestUserServiceUpdate(t *testing.T) {
+func TestUserService_Update(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	repository := mocks.NewMockUserRepository(ctrl)

@@ -20,7 +20,7 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
-func TestUserControllerCreate(t *testing.T) {
+func TestUserController_Create(t *testing.T) {
 	crtl := gomock.NewController(t)
 	defer crtl.Finish()
 	service := mocks.NewMockUserService(crtl)

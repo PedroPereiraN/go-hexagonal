@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-
 	"github.com/PedroPereiraN/go-hexagonal/adapter/input/controller"
 	"github.com/PedroPereiraN/go-hexagonal/adapter/output/repository"
 	"github.com/PedroPereiraN/go-hexagonal/services"
@@ -22,6 +21,8 @@ func main() {
 	router := gin.Default()
 
 	db, err := sql.Open("postgres", "postgres://postgres:postgres@postgres:5432/db?sslmode=disable")
+	defer db.Close()
+
 
 	if err != nil {
 		fmt.Println(err)
@@ -56,9 +57,6 @@ func main() {
 	router.PUT("/user", uController.Update)
 	router.PATCH("/user/update-password", uController.UpdatePassword)
 	router.POST("/user/login", uController.Login)
-
-	defer db.Close()
-
 
   router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 

@@ -15,7 +15,7 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
-func TestUserControllerDelete(t *testing.T) {
+func TestUserController_Delete(t *testing.T) {
 	crtl := gomock.NewController(t)
 	defer crtl.Finish()
 	service := mocks.NewMockUserService(crtl)
